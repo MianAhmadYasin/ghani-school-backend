@@ -1,0 +1,7 @@
+2025-12-21 15:53:03 - root - INFO - setup_logging:79 - Logging initialized at 20 level
+2025-12-21 15:53:03 - main - INFO - lifespan:30 - Validating configuration...
+2025-12-21 15:53:03 - main - INFO - lifespan:32 - ✅ Configuration validated successfully
+2025-12-21 15:53:03 - main - INFO - lifespan:34 - Starting School Management System v1.0.0
+2025-12-21 15:53:03 - main - INFO - lifespan:35 - Debug mode: OFF
+2025-12-21 15:53:03 - main - INFO - lifespan:36 - Frontend URL: http://localhost:3000
+2025-12-21 15:53:06 - app.api.v1.endpoints.auth - INFO - login:127 - User logged in successfully: qamar.admin@ghani.com (admin)
