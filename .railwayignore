@@ -1,0 +1,49 @@
+# Railway ignore file
+# Files and directories to exclude from Railway builds
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+*.md
+!README.md
+
+# Excel files (if any)
+*.xlsx
+*.xls
+
+# Environment files (use Railway env vars instead)
+.env
+.env.local
+.env.*.local
+
+
+

@@ -16,7 +16,8 @@ echo "🌍 Environment: ${ENVIRONMENT:-production}"
 
 # Start Gunicorn with Uvicorn workers
 # Railway automatically sets PORT, so we use it directly
-exec gunicorn main:app \
+# Use python -m gunicorn to avoid PATH issues
+exec python -m gunicorn main:app \
     -w 4 \
     -k uvicorn.workers.UvicornWorker \
     --bind "0.0.0.0:${PORT}" \
