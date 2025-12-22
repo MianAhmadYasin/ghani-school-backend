@@ -138,15 +138,26 @@ if not settings.DEBUG:
 
 # CORS Configuration
 # Get allowed origins from environment or use defaults
-allowed_origins = [
-    settings.FRONTEND_URL,
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+allowed_origins = []
+
+# Add frontend URL if set
+if settings.FRONTEND_URL:
+    allowed_origins.append(settings.FRONTEND_URL)
+
+# Add localhost for development (only if not in production)
+if settings.DEBUG or settings.ENVIRONMENT != "production":
+    allowed_origins.extend([
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ])
 
 # Remove duplicates while preserving order
 seen = set()
-allowed_origins = [x for x in allowed_origins if not (x in seen or seen.add(x))]
+allowed_origins = [x for x in allowed_origins if x and not (x in seen or seen.add(x))]
+
+# In production, require at least one origin unless DEBUG is enabled
+if not settings.DEBUG and not allowed_origins:
+    logger.warning("⚠️  No CORS origins configured for production. Set FRONTEND_URL environment variable.")
 
 app.add_middleware(
     CORSMiddleware,
@@ -155,6 +166,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["X-RateLimit-Limit-PerMinute", "X-RateLimit-Limit-PerHour"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Include API router
