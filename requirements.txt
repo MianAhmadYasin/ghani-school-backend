@@ -6,6 +6,7 @@ gunicorn==21.2.0
 # Data validation
 pydantic==2.5.0
 pydantic-settings==2.1.0
+email-validator==2.1.0
 
 # Database and authentication
 supabase==2.3.0
@@ -21,5 +22,3 @@ python-dotenv==1.0.0
 
 # Production monitoring (optional)
 # sentry-sdk[fastapi]==1.38.0
-
-
