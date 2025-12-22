@@ -22,8 +22,13 @@ def setup_logging(log_level: Optional[str] = None) -> None:
         level = logging.DEBUG if settings.DEBUG else logging.INFO
     
     # Create logs directory if it doesn't exist
+    # In Docker/production, logs go to stdout/stderr, so file logging is optional
     log_dir = Path("logs")
-    log_dir.mkdir(exist_ok=True)
+    try:
+        log_dir.mkdir(exist_ok=True)
+    except (PermissionError, OSError):
+        # If we can't create logs directory (e.g., in some Docker setups), skip file logging
+        log_dir = None
     
     # Create formatters
     detailed_formatter = logging.Formatter(
@@ -49,27 +54,32 @@ def setup_logging(log_level: Optional[str] = None) -> None:
     console_handler.setFormatter(simple_formatter)
     root_logger.addHandler(console_handler)
     
-    # File handler with rotation (detailed format)
-    file_handler = RotatingFileHandler(
-        filename=log_dir / "app.log",
-        maxBytes=10 * 1024 * 1024,  # 10MB
-        backupCount=5,
-        encoding='utf-8'
-    )
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(detailed_formatter)
-    root_logger.addHandler(file_handler)
-    
-    # Error file handler (only errors and above)
-    error_handler = RotatingFileHandler(
-        filename=log_dir / "errors.log",
-        maxBytes=10 * 1024 * 1024,  # 10MB
-        backupCount=5,
-        encoding='utf-8'
-    )
-    error_handler.setLevel(logging.ERROR)
-    error_handler.setFormatter(detailed_formatter)
-    root_logger.addHandler(error_handler)
+    # File handler with rotation (detailed format) - only if log directory is writable
+    if log_dir:
+        try:
+            file_handler = RotatingFileHandler(
+                filename=log_dir / "app.log",
+                maxBytes=10 * 1024 * 1024,  # 10MB
+                backupCount=5,
+                encoding='utf-8'
+            )
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(detailed_formatter)
+            root_logger.addHandler(file_handler)
+            
+            # Error file handler (only errors and above)
+            error_handler = RotatingFileHandler(
+                filename=log_dir / "errors.log",
+                maxBytes=10 * 1024 * 1024,  # 10MB
+                backupCount=5,
+                encoding='utf-8'
+            )
+            error_handler.setLevel(logging.ERROR)
+            error_handler.setFormatter(detailed_formatter)
+            root_logger.addHandler(error_handler)
+        except (PermissionError, OSError):
+            # If file logging fails, continue with console logging only
+            root_logger.warning("File logging not available, using console logging only")
     
     # Suppress noisy third-party loggers
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
