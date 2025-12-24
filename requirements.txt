@@ -10,6 +10,11 @@ email-validator==2.3.0
 
 # Database and authentication
 supabase==2.22.0
+supabase-auth==2.22.0
+supabase-functions==2.22.0
+postgrest==2.22.0
+realtime==2.22.0
+storage3==0.7.7
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 
