@@ -20,6 +20,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Verify critical packages are installed
+RUN python -c "import gunicorn; print('✅ gunicorn:', gunicorn.__version__)" && \
+    python -c "import fastapi; print('✅ fastapi:', fastapi.__version__)" && \
+    python -c "import uvicorn; print('✅ uvicorn:', uvicorn.__version__)" && \
+    python -m gunicorn --version > /dev/null 2>&1 && echo "✅ gunicorn executable works"
+
 # Create non-root user for security
 RUN groupadd -r appuser && \
     useradd -r -g appuser -u 1000 appuser && \
