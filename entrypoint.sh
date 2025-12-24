@@ -8,10 +8,12 @@ set -e
 export ENVIRONMENT=${ENVIRONMENT:-production}
 export PYTHONUNBUFFERED=1
 
-# ALWAYS print PORT for debugging (even in production for Railway)
-echo "🔍 PORT environment variable check..."
-echo "PORT env var value: '${PORT:-NOT_SET}'"
-echo "PORT env var type: $(echo "${PORT}" | od -An -tx1 | head -1)"
+# Debug: Print PORT environment variable (only in debug mode)
+if [ "${ENVIRONMENT}" != "production" ]; then
+    echo "🔍 Debugging PORT environment variable..."
+    echo "PORT env var: '${PORT:-NOT_SET}'"
+    env | grep -i port || echo "No PORT-related env vars found"
+fi
 
 # Get PORT from environment (Railway sets this automatically)
 # Check if PORT is set and not the literal string "$PORT"
@@ -40,7 +42,7 @@ fi
 export PORT
 
 echo "🚀 Starting School Management System Backend..."
-echo "📡 Final PORT value: $PORT"
+echo "📡 Using Port: $PORT"
 echo "🌍 Environment: ${ENVIRONMENT}"
 
 # Build bind address with validated PORT number
@@ -81,3 +83,4 @@ exec python -m gunicorn main:app \
     --log-level "$LOG_LEVEL" \
     --capture-output \
     --enable-stdio-inheritance
+
