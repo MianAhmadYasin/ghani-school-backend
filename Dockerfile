@@ -24,7 +24,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN python -c "import gunicorn; print('✅ gunicorn:', gunicorn.__version__)" && \
     python -c "import fastapi; print('✅ fastapi:', fastapi.__version__)" && \
     python -c "import uvicorn; print('✅ uvicorn:', uvicorn.__version__)" && \
-    python -c "from supabase import create_client, Client; print('✅ supabase imported successfully')" && \
     python -m gunicorn --version > /dev/null 2>&1 && echo "✅ gunicorn executable works"
 
 # Create non-root user for security
